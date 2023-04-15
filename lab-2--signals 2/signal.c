@@ -1,27 +1,30 @@
+// Worked with Keerthana Pullela and Jamarri White
+// Kuira Edwards @02942519
 /* hello_signal.c */
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
 #include <unistd.h>
-#include <time.h>
 
-int hand;
+int alarmOn = 0;
+
 void handler(int signum)
 { //signal handler
   printf("Hello World!\n");
-  hand = 1;
-  exit(1); //exit after printing
+  sleep(2);
+  alarmOn = 1;
 }
 
 int main(int argc, char * argv[])
 {
   signal(SIGALRM,handler); //register handler to handle SIGALRM
+  alarm(2); //Schedule a SIGALRM for 1 second
   while(1) { //busy wait for signal to be delivered
-    hand = 0;
-    alarm(1); //Schedule a SIGALRM for 1 second
-  while(hand == 0);
-  printf("Turing was right!\n") 
+    alarmOn = 0;
+    alarm(2);
+    while(!alarmOn) {
+      printf("Turing was right!\n");
+    }
   }
-  //busy wait for signal to be delivered
   return 0; //never reached
 }

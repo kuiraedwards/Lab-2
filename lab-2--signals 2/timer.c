@@ -1,44 +1,42 @@
+// Worked with Keerthana Pullela and Jamarri White
+// Kuira Edwards @02942519
+
 /* timer.c */
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
 #include <unistd.h>
-#include <time.h>
 
-//****
+int alarmOn = 0;
+int num = 0;
 
-int hand;
-int count;
-time_t startTime, endTime;
+time_t start, stop;
 
 void handler(int signum) { //signal handler
-  count += 1;
-  printf("Hello World!\n")
-  hand = 1;
-  exit(1); //exit after printing
+  printf("Hello World!\n");
+  sleep(2);
+  alarmOn = 1;
+  num++;
 }
 
-void timerhandler(int signum) { //time tracker
-  time_t runTime;
-  endTime = time(NULL);
-  runTime = endTime - startTime;
-  printf("\nNumber of alarms %d\nNumber of seconds executed %d seconds\n", count, (int)runTime);
-  exit(0);
+void sigHandler(int signum) {
+  int total;
+  stop = time(NULL);
+  total = stop - start;
+
+  printf("The number of alarms is %d\n", total);
 }
 
-int main(int argc, char * argv[])
-{
-  startTime = time(NULL);
-  signal(SIGALRM,handler); //register handler to handle SIGALRM
-  signal(SIGINT, timerhandler);
-  while(1) { //busy wait for signal to be delivered
-    hand = 0;
-    alarm(1); //Schedule a SIGALRM for 1 second
-  while(hand == 0);
-  printf("Turing was right!\n") 
+int main(int argc, char *argv[]) {
+  signal(SIGALRM, handler); //handles SIGALRM
+  signal(SIGINT, sigHandler);
+  start = time(NULL);
+  while(1) {
+    alarmOn = 0;
+    alarm(2);
+    while(!alarmOn) {
+      printf("Turing was right!\n");
+    }
   }
-  //busy wait for signal to be delivered
-  return 0; //never reached
+  return 0;
 }
-
-*******/
